@@ -1,0 +1,139 @@
+<html>
+<head>     
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='blue.css') }}" /> 
+    <title>home</title>
+</head>
+
+</div>
+<div class="topnav">
+  <a class="active" href="http://127.0.0.1:5000/">home</a>
+  <a href="http://127.0.0.1:5000/contact">contact</a>
+  <a href="http://127.0.0.1:5000/about/">about</a>
+</div>
+<h1>drawing!</h1>
+
+<canvas class="canvas" id="myCanvas" width="1200" height="620">
+</canvas>  
+
+<div class="wrapper">
+  <div class="row">
+    <p>
+    <label class="options">color: </label>
+    <input type="color" onchange="getColor(value)" id="color-picker" value="#000000"/>
+    </p>
+    <p>
+    </p>
+    <label class="switch">
+      <input type="checkbox" onclick="eraser(this)" value='white' id="checkbox"></button>
+      <span class="switchslider round"></span>
+    </label>
+    <p>
+    <label class="options">brush size: </label>
+    </p>
+    <p>
+    <input class="slider" onclick="getWidth(value)" type="range" min="1" max="140" value="3" id="linesize">
+    </p>
+    <p></p>
+
+    <p>
+    <button class="button" type="button" onclick="clearcanvas()">clear canvas</button>
+    <button class="button" type="button" onclick="download()" id="save">save as image</button>
+    </p>
+
+  </div>
+</div> 
+
+
+<script type="text/javascript">
+    const c = document.getElementById("myCanvas");
+    const ctx = c.getContext("2d");
+    let firstCoordX = 0
+    let firstCoordY = 0
+    let secondCoordX = 0
+    let secondCoordY = 0
+    let draw = false
+    let firstX = 0
+    let firstY = 0
+    let secondX = 0
+    let secondY = 0
+    let prevColor = 'black'
+    ctx.fillStyle = 'white'
+    ctx.fillRect(0, 0, c.width, c.height)
+    function download() {
+      var image = c.toDataURL("image/png").replace("image/png", "image/octet-stream");
+      window.location.href = image;
+    }
+    var color;
+      color = 'black'
+      function getColor(value){
+        color = value
+        ctx.strokeStyle = color
+    }
+    var checkbox;
+      function eraser(e){
+        if (e.checked === true) {
+          prevColor = color
+          color = e.value
+          ctx.strokeStyle = color
+        } 
+        else {
+          color = prevColor
+          ctx.strokeStyle = color
+          }
+        }
+    var range;
+      function getWidth(value){
+        range = 50
+        range = value
+        console.log(range)
+    }
+    function clearcanvas() {
+      ctx.clearRect(0, 0, c.width, c.height)
+      ctx.fillStyle = "white"
+      ctx.fillRect(0, 0, c.width, c.height)
+    }
+    window.addEventListener("click", (e) => {
+      firstX = e.clientX - 280
+      firstY = e.clientY - 195
+      ctx.lineCap = 'round'
+      ctx.lineJoin = 'round'
+      ctx.beginPath()
+      ctx.moveTo(firstX, firstY)
+      ctx.lineTo(firstX+0.3, firstY+0.3)
+      ctx.lineWidth = range
+      ctx.strokeStyle = color
+      ctx.stroke()
+    })
+    window.addEventListener("mousedown", (e) => {
+      draw = true
+      firstX = e.clientX - 280
+      firstY = e.clientY - 195
+      ctx.lineCap = 'round'
+      ctx.lineJoin = 'round'
+
+    })
+    window.addEventListener("mouseup", (e) => {
+      draw = false;
+    })
+    window.addEventListener("mousemove", (e) => {
+      if(draw == false){
+          return
+        }
+        secondX = e.clientX - 280
+        secondY = e.clientY - 195
+        ctx.beginPath()
+        ctx.moveTo(firstX, firstY)
+        ctx.lineTo(secondX, secondY)
+        ctx.lineWidth = range
+        ctx.strokeStyle = color
+        ctx.stroke()
+        firstX = secondX
+        firstY = secondY
+})
+
+</script>    
+
+</body>
+</html>
